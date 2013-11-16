@@ -14,6 +14,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 app.engine('html', hbs.__express);
 
+hbs.registerHelper('format_MMMMDYYYY', function(date) {
+  return moment(date).format('MMMM DD, YYYY');
+});
+
 hbs.registerHelper('format_hmma', function(date) {
   return moment(date).format('h:mm a');
 });
@@ -24,13 +28,9 @@ hbs.registerHelper('from_now', function(date) {
 
 
 app.post('/sensor/:name', function(req, res) {
-  // console.log('Looking for room: %s', req.params.name);
-  Room.findById(req.params.name, function(err, room) {
-    if (err || room === null) {
-      console.error('Creating new Room: %s', room);
-      room = new Room({_id: req.params.name});
-    }
-
+  var name = req.params.name;
+  console.log('Received signal from room: %s', name);
+  Room.fromId(name, function(err, room) {
     room.times.push(new Date());
     room.save(function(err) {
       if (err) {
@@ -41,7 +41,7 @@ app.post('/sensor/:name', function(req, res) {
   });
 });
 
-app.get('/smooth', function(req, res) {
+app.get('/', function(req, res) {
   var two_hours_ago = moment().subtract(moment.duration(2, 'hours'));
   // span is the raw duration (milliseconds) between now and two hours ago
   var span = moment().diff(two_hours_ago);
@@ -62,7 +62,7 @@ app.get('/smooth', function(req, res) {
 
   Room.find(function(err, rooms) {
     rooms = rooms.map(function(room) {
-      var times = room.times.filter(function(time) {
+      var times = (room.times || []).filter(function(time) {
         return time > two_hours_ago;
       }).map(function(time) {
         return {
@@ -73,10 +73,15 @@ app.get('/smooth', function(req, res) {
       return {
         name: room._id,
         description: room.description,
-        last: room.times[room.times.length - 1],
+        last: Math.max.apply(null, room.times),
         times: times,
       };
     });
+
+    rooms.sort(function(a, b) {
+      return a.last - b.last;
+    });
+
     var context = {
       rooms: rooms,
       slots: slots,
@@ -88,13 +93,67 @@ app.get('/smooth', function(req, res) {
   });
 });
 
-app.get('/populate', function(req, res) {
-  //
-  Room.find(function(err, rooms) {
+function rnorm() {
+  // from http://stackoverflow.com/questions/15279271/bias-in-randomizing-normally-distributed-numbers-javascript
+  var x = 0, y = 0, rds, c;
+
+  // Get two random numbers from -1 to 1.
+  // If the radius is zero or greater than 1, throw them out and pick two new ones
+  // Rejection sampling throws away about 20% of the pairs.
+  do {
+    x = Math.random()*2-1;
+    y = Math.random()*2-1;
+    rds = x*x + y*y;
+  } while (rds === 0 || rds > 1);
+
+  // This magic is the Box-Muller Transform
+  c = Math.sqrt(-2 * Math.log(rds) / rds);
+
+  // It always creates a pair of numbers. I'll return them in an array.
+  // This function is quite efficient so don't be afraid to throw one away if you don't need both.
+  // return [x*c, y*c];
+  return x*c;
+}
+
+app.get('/populate/:name', function(req, res) {
+  var name = req.params.name;
+  var now = new Date();
+  console.log('Populating room with random times: %s', name);
+  Room.fromId(name, function(err, room) {
+    for (var i = 0; i < 5; i++) {
+      // pick 5 events sometime in the last three hours
+      var event = new Date() - (2*60*60*1000 * Math.random());
+      // console.log('event', new Date(event));
+      // var date = new Date(now - (minutes_since_event + minutes_around_event - offset) * 60 * 1000);
+      // var offset = 90;
+      // var minutes_since_event = (rnorm() * 45);
+      for (var j = 0; j < 10; j++) {
+        // pick 10 times somewhere 15 minutes before that.
+        var signal = new Date(event - (15*60*1000 * Math.random()));
+        // var minutes_around_event = (rnorm() * 15);
+        // console.log('signal', signal);
+        room.times.push(signal);
+      }
+    }
+
+    console.log('Saving room: %s', name);
+    room.save(function(err) {
+      res.end('Done. Room has logged ' + room.times.length + ' times.');
+    });
   });
 });
 
-app.get('/', function(req, res) {
+app.get('/empty/:name', function(req, res) {
+  var name = req.params.name;
+  Room.fromId(name, function(err, room) {
+    room.times = [];
+    room.save(function(err) {
+      res.end('Done. Room has logged ' + room.times.length + ' times.');
+    });
+  });
+});
+
+app.get('/original', function(req, res) {
   var current_time = new Date().getTime() / 1000,
       one_hour_ago = current_time - 60 * 60,
       num_blocks = 12,

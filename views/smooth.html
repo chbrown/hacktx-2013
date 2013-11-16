@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>HackTX - Empty</title>
+    <title>HackTX - Available</title>
     <!-- meta-refresh "content" is in seconds -->
-    <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="1">
 
     <link rel="stylesheet" href="/static/css/normalize.css">
     <style>
@@ -17,13 +17,20 @@
     h1 {
       font-size: 150%;
     }
+    h2, h4 {
+      margin: 0.5em 0;
+    }
+    h2 span {
+      color: darkgreen;
+      font-size: 60%;
+    }
     .rooms {
       width: 80%;
       padding-left: 80px;
     }
     .room h2 {
       margin-top: 1.5em;
-      padding-top: .5em;
+      padding-top: .25em;
       border-top: 2px solid #AAA;
     }
     .timeslots {
@@ -34,18 +41,22 @@
     .slot {
       position: absolute;
       border-right: 1px solid #AAA;
-      padding: 5px 5px 25px 0;
+      padding: 5px 5px 35px 0;
       white-space: nowrap;
+      /*font-weight: bold;*/
     }
     .time {
       position: absolute;
       background-color: rgba(255, 100, 50, 0.5);
-      margin-top: 25px;
+      margin-top: 30px;
       width: 10px;
+    }
+    p {
+      margin: .25em 0;
     }
 
     .now {
-      padding: 40px 10px;
+      padding: 27px 10px;
       top: 0;
       left: 80%;
       height: 100%;
@@ -59,8 +70,7 @@
       <h1>Room availability</h1>
       {{#each rooms}}
         <div class="room">
-          <h2>{{name}}</h2>
-          <p>{{description}}</p>
+          <h2>{{name}} <span>{{description}}</span></h2>
           <h4>Last saw movement: {{from_now last}}</h4>
           <div class="timeslots">
             {{#each ../slots}}
@@ -76,6 +86,7 @@
       {{/each}}
     </div>
     <div class="now">
+      <h3 style="color: darkgreen"><i>{{format_MMMMDYYYY now}}</i></h3>
       <h3>Current time: {{format_hmma now}}</h3>
     </div>
   </body>
