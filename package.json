@@ -2,7 +2,9 @@
   "name": "avail",
   "version": "0.0.1",
   "dependencies": {
+    "async": "*",
     "express": "*",
+    "eyes": "*",
     "hbs": "*",
     "moment": "*",
     "mongodb": "*",

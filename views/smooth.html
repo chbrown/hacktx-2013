@@ -10,7 +10,6 @@
     * {
       box-sizing:border-box
     }
-
     body {
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       color: #433;
@@ -19,13 +18,37 @@
       font-size: 150%;
     }
     .rooms {
-      margin-right: 20%;
-
+      width: 80%;
+      padding-left: 80px;
     }
+    .room h2 {
+      margin-top: 1.5em;
+      padding-top: .5em;
+      border-top: 2px solid #AAA;
+    }
+    .timeslots {
+      width: 100%;
+      height: 30px;
+      position: relative;
+    }
+    .slot {
+      position: absolute;
+      border-right: 1px solid #AAA;
+      padding: 5px 5px 25px 0;
+      white-space: nowrap;
+    }
+    .time {
+      position: absolute;
+      background-color: rgba(255, 100, 50, 0.5);
+      margin-top: 25px;
+      width: 10px;
+    }
+
     .now {
       padding: 40px 10px;
       top: 0;
       left: 80%;
+      height: 100%;
       border-left: 2px solid #555;
       position: fixed;
     }
@@ -34,13 +57,26 @@
   <body>
     <div class="rooms">
       <h1>Room availability</h1>
-      {{#rooms}}
-        <div>{{name}}</div>
-
-      {{/rooms}}
+      {{#each rooms}}
+        <div class="room">
+          <h2>{{name}}</h2>
+          <p>{{description}}</p>
+          <h4>Last saw movement: {{from_now last}}</h4>
+          <div class="timeslots">
+            {{#each ../slots}}
+              <div class="slot" style="right: {{offset}}%">
+                {{format_hmma time}}
+              </div>
+            {{/each}}
+            {{#each times}}
+              <div class="time" style="right: {{offset}}%">&nbsp;</div>
+            {{/each}}
+          </div>
+        </div>
+      {{/each}}
     </div>
     <div class="now">
-      <h3>Current time: {{time now}}</h3>
+      <h3>Current time: {{format_hmma now}}</h3>
     </div>
   </body>
   <script src="/static/jquery.min.js"></script>
