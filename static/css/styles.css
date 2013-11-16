@@ -1,0 +1,109 @@
+* {
+	box-sizing:border-box
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #333333;
+  background-color: #ffffff;
+  margin:20px;
+}
+
+h1 {
+	font-size:30px;
+}
+
+/*  SECTIONS  */
+.section {
+	clear: both;
+	padding: 0px;
+	margin: 0px;
+}
+
+/*  COLUMN SETUP  */
+.col {
+	display: block;
+	float:left;
+	margin: 1% 0 1% 1.6%;
+}
+.col:first-child { margin-left: 0; }
+
+/*  GROUPING  */
+.group:before,
+.group:after {
+	content:"";
+	display:table;
+}
+.group:after {
+	clear:both;
+}
+
+#rooms {
+	margin-top:30px;
+}
+
+.room {
+	border-bottom:1px solid #222;
+}
+
+.room:last-of-type {
+	border:0;
+}
+
+.room-info {
+	width:20%;
+	max-width:200px;
+}
+
+.room-title {
+	font-size:20px;
+	padding-top:15px;
+}
+
+.room-timeline {
+	width:80%;
+	margin-top: 25px;
+}
+
+.room-timeblock {
+	width:100px;
+	height:50px;
+	color:white;
+	text-align:center;
+	padding-top:13px;
+	margin:0;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+}
+
+.room-timeblock:first-of-type {
+	border-top-left-radius:10px;
+	border-bottom-left-radius:10px;
+	border-left: 1px solid black;
+}
+
+.room-timeblock:last-of-type {
+	border-top-right-radius:10px;
+	border-bottom-right-radius:10px;
+}
+
+.room-timeblock.vacant {
+	background-color:green;
+}
+
+.room-timeblock.occupied {
+	background-color:red;
+}
+
+.room-status.vacant {
+	color:green;
+	font-weight:bold;
+}
+
+.room-status.occupied {
+	color:red;
+	font-weight:bold;
+}

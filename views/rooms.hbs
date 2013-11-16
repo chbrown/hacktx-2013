@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HackTX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/static/css/normalize.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+  </head>
+  <body>
+    <h1>Room Capacity Monitor</h1>
+
+    <div id="rooms section group">
+      {{#each room}}
+        <div class="room section group">
+          <div class="room-info col">
+            <div class="room-title">{{name}}</div>
+            <div class="room-activity">Last activity <span class="room-status occupied">4 minutes ago</span>!</div>
+          </div>
+          <div class="room-timeline col">
+            {{#each times}}
+              <span class="room-timeblock col {{status}}">{{available}}</span>
+            {{/each}}
+          </div>
+      {{/each}}
+      <div class="room section group">
+        <div class="room-info col">
+          <div class="room-title">Room 1</div>
+          <div class="room-activity">Last activity <span class="room-status occupied">4 minutes ago</span>!</div>
+        </div>
+        <div class="room-timeline col">
+          <span class="room-timeblock col vacant">3:00</span>
+          <span class="room-timeblock col occupied">3:15</span>
+          <span class="room-timeblock col occupied">3:30</span>
+          <span class="room-timeblock col occupied">3:45</span>
+          <span class="room-timeblock col vacant">4:00</span>
+          <span class="room-timeblock col occupied">4:15</span>
+          <span class="room-timeblock col occupied">4:30</span>
+          <span class="room-timeblock col occupied">4:45</span>
+        </div>
+      </div>
+      <div class="room section group">
+        <div class="room-info col">
+          <div class="room-title">Room 1</div>
+          <div class="room-activity">Last activity <span class="room-status vacant">1 hr ago</span>!</div>
+        </div>
+        <div class="room-timeline col">
+          <span class="room-timeblock col vacant">3:00</span>
+          <span class="room-timeblock col occupied">3:15</span>
+          <span class="room-timeblock col occupied">3:30</span>
+          <span class="room-timeblock col occupied">3:45</span>
+          <span class="room-timeblock col vacant">4:00</span>
+          <span class="room-timeblock col vacant">4:15</span>
+          <span class="room-timeblock col vacant">4:30</span>
+          <span class="room-timeblock col vacant">4:45</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

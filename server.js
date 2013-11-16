@@ -1,9 +1,10 @@
 'use strict'; /*jslint es5: true, node: true, indent: 2 */
 var express = require('express');
+var moment = require('moment');
 var mongoose = require('mongoose');
 
 // mongodb initialization
-mongoose.connect('localhost');
+mongoose.connect('localhost', 'hacktx');
 var room_schema = new mongoose.Schema({
   _id: String,
   description: String,
@@ -19,13 +20,20 @@ app.set('view engine', 'hbs');
 // app.engine('html', hbs.__express);
 
 app.post('/sensor/:name', function(req, res) {
-  Room.findByIdAndUpdate(req.params.name, {$push: {times: new Date()}}, {upsert: true}, function(err) {
-    if (err) {
-      console.error(err.stack);
-      res.end('Error: ' + err);
+  console.log('Looking for room: %s', req.params.name);
+  Room.findById(req.params.name, function(err, room) {
+    if (err || room === null) {
+      console.error('Creating new Room: %s', room);
+      room = new Room({_id: req.params.name});
     }
 
-    res.write('success');
+    room.times.push(new Date());
+    room.save(function(err) {
+      if (err) {
+        return res.end('room.save error: ' + err.toString());
+      }
+      res.end('success. ' + room.times.length + ' times stored.');
+    });
   });
 });
 
@@ -48,4 +56,6 @@ app.get('/', function(req, res) {
   });
 });
 
-app.listen(8070);
+app.listen(8070, function() {
+  console.log('Listening on :8070');
+});
