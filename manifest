@@ -1,0 +1,17 @@
+---
+applications:
+  .:
+    name: avail
+    framework:
+      name: node08
+      info:
+        mem: 256M
+        description: Node.js HackTX app
+        exec: server.js
+    infra: aws
+    url: ${name}.${target-base}
+    mem: 128M
+    instances: 1
+    services:
+      sensors:
+        type: mongodb
