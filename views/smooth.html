@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HackTX - Empty</title>
+    <!-- meta-refresh "content" is in seconds -->
+    <meta http-equiv="refresh" content="30">
+
+    <link rel="stylesheet" href="/static/css/normalize.css">
+    <style>
+    * {
+      box-sizing:border-box
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #433;
+    }
+    h1 {
+      font-size: 150%;
+    }
+    .rooms {
+      margin-right: 20%;
+
+    }
+    .now {
+      padding: 40px 10px;
+      top: 0;
+      left: 80%;
+      border-left: 2px solid #555;
+      position: fixed;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="rooms">
+      <h1>Room availability</h1>
+      {{#rooms}}
+        <div>{{name}}</div>
+
+      {{/rooms}}
+    </div>
+    <div class="now">
+      <h3>Current time: {{time now}}</h3>
+    </div>
+  </body>
+  <script src="/static/jquery.min.js"></script>
+  <script>
+
+  </script>
+</html>
