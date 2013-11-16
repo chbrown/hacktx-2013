@@ -1,46 +1,51 @@
 'use strict'; /*jslint es5: true, node: true, indent: 2 */
 var express = require('express');
-var hbs = require('hbs');
-
 var mongoose = require('mongoose');
-var Article = mongoose.model('Article');
+
+// mongodb initialization
+mongoose.connect('localhost');
+var room_schema = new mongoose.Schema({
+  _id: String,
+  description: String,
+  times: [Date]
+});
+var Room = mongoose.model('Room', room_schema);
 
 var app = express();
-
 app.set('views', __dirname + '/views');
-app.set('view engine', 'html');
-app.engine('html', hbs.__express);
+app.set('view engine', 'hbs');
+// app.set('view engine', 'html');
+// var hbs = require('hbs');
+// app.engine('html', hbs.__express);
 
 app.post('/sensor/:name', function(req, res) {
-  var entry = blogEngine.getBlogEntry(req.params.id);
+  Room.findByIdAndUpdate(req.params.name, {$push: {times: new Date()}}, {upsert: true}, function(err) {
+    if (err) {
+      console.error(err.stack);
+      res.end('Error: ' + err);
+    }
 
-
-  res.render('article', {title:entry.title, blog:entry});
-  res.write('success');
-  res.end();
+    res.write('success');
+  });
 });
 
-// app.get('/about', function(req, res) {
-//   res.render('about');
-// });
-
-// app.get('/article', function(req, res) {
-//   res.render('article');
-// });
-
-
-app.configure(function(){
-  // app.set('port', );
-  app.use(express.bodyParser());
-  app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', function(req, res) {
+  var one_hour_ago = (new Date().getTime()) * 60*60*1000;
+  Room.find(function(err, rooms) {
+    rooms = rooms.map(function(room) {
+      var recent_blocks = room.times.filter(function(time) {
+        return time >= one_hour_ago;
+      }).map(function(time) {
+        return time.toString();
+      });
+      return {
+        name: room.name,
+        description: room.description,
+        blocks: recent_blocks,
+      };
+    });
+    res.render('rooms', rooms);
+  });
 });
 
-
-var express = require('express');
-var app = express();
-
-app.listen(process.env.PORT || 8070);
-
-// http.createServer(app).listen(app.get('port'), function(){
-//   console.log(“RabbitMQ + Node.js app running on AppFog!”);
-// });
+app.listen(8070);

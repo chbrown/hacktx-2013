@@ -1,0 +1,13 @@
+{
+  "name": "avail",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "*",
+    "hbs": "*",
+    "mongodb": "*",
+    "mongoose": "*"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
