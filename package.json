@@ -6,9 +6,9 @@
     "express": "*",
     "eyes": "*",
     "hbs": "*",
+    "loge": "*",
     "moment": "*",
     "mongodb": "*",
-    "winston": "*",
     "mongoose": "*"
   },
   "scripts": {

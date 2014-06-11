@@ -1,4 +1,5 @@
-'use strict'; /*jslint es5: true, node: true, indent: 2 */
+#!/usr/bin/env node
+/*jslint node: true */
 var express = require('express');
 var async = require('async');
 var eyes = require('eyes');
